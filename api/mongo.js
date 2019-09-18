@@ -204,4 +204,11 @@ mongo.accountsShow = async function(tcxId) {
   return null;
 };
 
+mongo.explorerShower = async function(nodeId, limit) {
+  if (!conn) {
+    await mongo.connect();
+  }
+
+  // TODO
+};
 module.exports = mongo;
