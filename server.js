@@ -100,6 +100,7 @@ const ges = {
   },
 
   forAccount: async (ctx, id) => {
+    let data = await mongo.gesForAccount(id);
     ctx.body = data ? { data } : error;
   },
 };

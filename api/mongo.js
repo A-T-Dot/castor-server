@@ -47,7 +47,7 @@ mongo.nodesAll = async function() {
     await mongo.connect();
   }
   let result = await db
-    .collection("node")
+    .collection("nodes")
     .find({}, { projection: { _id: 0 } })
     .toArray();
   return result;
@@ -59,7 +59,7 @@ mongo.nodesShow = async function(nodeId) {
   }
 
   let result = await db
-    .collection("node")
+    .collection("nodes")
     .findOne({ nodeId: nodeId }, { projection: { _id: 0 } });
 
   return result;
@@ -70,7 +70,7 @@ mongo.nodesForAccount = async function(accountId) {
     await mongo.connect();
   }
   let result = await db
-    .collection("node")
+    .collection("nodes")
     .find({ owner: accountId }, { projection: { _id: 0 } })
     .toArray();
 
@@ -82,7 +82,7 @@ mongo.gesAll = async function() {
     await mongo.connect();
   }
   let result = await db
-    .collection("ge")
+    .collection("ges")
     .find({}, { projection: { _id: 0 } })
     .toArray();
   return result;
@@ -93,9 +93,23 @@ mongo.gesShow = async function(geId) {
     await mongo.connect();
   }
 
+  // let result = await db
+  //   .collection("ges")
+  //   .findOne({ geId: geId }, { projection: { _id: 0 } });
   let result = await db
-    .collection("ge")
-    .findOne({ geId: geId }, { projection: { _id: 0 } });
+    .collection("ges")
+    .aggregate([
+      {
+        $lookup: {
+          from: "tcxs",
+          localField: "tcxIds",
+          foreignField: "tcxId",
+          as: "tcxs"
+        }
+      },
+      { $match: { geId: geId } }
+    ])
+    .toArray();
 
   return result;
 };
@@ -104,10 +118,11 @@ mongo.gesForAccount = async function(accountId) {
   if (!conn) {
     await mongo.connect();
   }
-  let result = await db
-    .collection("node")
-    .find({ owner: accountId }, { projection: { _id: 0 } })
-    .toArray();
+  // let result = await db
+  //   .collection("ges")
+  //   .find({ owner: accountId }, { projection: { _id: 0 } })
+  //   .toArray();
+  // TODO: ge for account
 
   return result;
 };
@@ -117,7 +132,7 @@ mongo.tcxsAll = async function() {
     await mongo.connect();
   }
   let result = await db
-    .collection("tcx")
+    .collection("tcxs")
     .find({}, { projection: { _id: 0 } })
     .toArray();
   return result;
@@ -128,20 +143,46 @@ mongo.tcxsShow = async function(tcxId) {
     await mongo.connect();
   }
 
-  let result = await db
-    .collection("tcx")
-    .findOne({ tcxId: tcxId }, { projection: { _id: 0 } });
+  // let result = await db
+  //   .collection("tcxs")
+  //   .findOne({ tcxId: tcxId }, { projection: { _id: 0 } });
 
-  return result;
+  let result = await db.collection("tcxs").aggregate([
+    {
+      $lookup: {
+        from: "nodes",
+        localField: "nodeIds",
+        foreignField: "nodeId",
+        as: "nodes"
+      }
+    },
+    { $match: { tcxId: tcxId } }
+  ]).toArray();
+
+  return result[0];
 };
 
 mongo.tcxsForGe = async function(geId) {
   if (!conn) {
     await mongo.connect();
   }
+  // let result = await db
+  //   .collection("tcxs")
+  //   .find({ owner:geId }, { projection: { _id: 0 } })
+  //   .toArray();
   let result = await db
-    .collection("tcx")
-    .find({ owner:geId }, { projection: { _id: 0 } })
+    .collection("tcxs")
+    .aggregate([
+      {
+        $lookup: {
+          from: "nodes",
+          localField: "nodeIds",
+          foreignField: "nodeId",
+          as: "nodes"
+        }
+      },
+      { $match: { owner: geId } }
+    ])
     .toArray();
 
   return result;
