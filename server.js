@@ -186,6 +186,23 @@ const explorer = {
   }
 };
 
+const tasks = {
+  forAccount: async (ctx, id) => {
+    let data = await mongo.tasksForAccount(id);
+    ctx.body = data ? { data } : error;
+  },
+
+  forTcx: async (ctx, id) => {
+    let data = await mongo.tasksForTcx(id);
+    ctx.body = data ? { data } : error;
+  },
+
+  forGe: async (ctx, id) => {
+    let data = await mongo.tasksForGe(id);
+    ctx.body = data ? { data } : error;
+  }
+};
+
 // nodes
 app.use(route.get("/api/v1/nodes", nodes.all));
 app.use(route.get("/api/v1/nodes/:id", nodes.show));
@@ -194,16 +211,19 @@ app.use(route.get("/api/v1/nodes/:id", nodes.show));
 app.use(route.get("/api/v1/ges", ges.all));
 app.use(route.get("/api/v1/ges/:id", ges.show));
 app.use(route.get("/api/v1/ges/:id/tcxs", tcxs.forGe));
+app.use(route.get("/api/v1/ges/:id/tasks", tasks.forGe));
 
 // tcx
 app.use(route.get("/api/v1/tcxs", tcxs.all));
 app.use(route.get("/api/v1/tcxs/:id", tcxs.show));
+app.use(route.get("/api/v1/tcxs/:id/tasks", tasks.forTcx));
 
 // account
 app.use(route.get("/api/v1/accounts", accounts.all));
 app.use(route.get("/api/v1/accounts/:id", accounts.show));
 app.use(route.get("/api/v1/accounts/:id/nodes", nodes.forAccount));
 app.use(route.get("/api/v1/accounts/:id/ges", ges.forAccount));
+app.use(route.get("/api/v1/accounts/:id/tasks", tasks.forAccount));
 
 // node explorer
 app.use(route.get("/api/v1/explorer/:id", explorer.show));
