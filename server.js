@@ -2,9 +2,11 @@ const Koa = require("koa");
 const route = require("koa-route");
 const websockify = require("koa-websocket"); // https://github.com/kudos/koa-websocket
 const chain = require("./api/chain");
+const mongo = require("./api/mongo");
 
 require("dotenv").config();
 
+mongo.connect();
 const app = websockify(new Koa());
 
 // let WS = null;
@@ -47,56 +49,85 @@ app.use(async (ctx, next) => {
 //   })
 // );
 
+// JSON Success Format
+// {
+//   "data": {
+//     "id": 1001,
+//     "name": "Wing"
+//   }
+// }
+// JSON Error Format
+// {
+//   "error": {
+//     "code": 404,
+//     "message": "ID not found"
+//   }
+// }
+
+const error = {
+  error: {
+    code: 404,
+    message: "not found"
+  }
+}
 
 const nodes = {
-  all: ctx => {
-    ctx.body = { data: "all" };
+  all: async ctx => {
+    let data = await mongo.nodesAll();
+    ctx.body = data ? { data } : error;
   },
 
-  show: (ctx, id) => {
-    ctx.body = { data: id}
+  show: async (ctx, id) => {
+    let data = await mongo.nodesShow(id);
+    ctx.body = data ? { data } : error;
   },
 
-  forAccount: (ctx, id) => {
-    ctx.body = { data: id };
+  forAccount: async (ctx, id) => {
+    let data = await mongo.nodesForAccount(id);
+    ctx.body = data ? { data } : error;
   },
 };
 
 const ges = {
-  all: ctx => {
-    ctx.body = { data: "all" };
+  all: async ctx => {
+    let data = await mongo.gesAll();
+    ctx.body = data ? { data } : error;
   },
 
-  show: (ctx, id) => {
-    ctx.body = { data: id };
+  show: async (ctx, id) => {
+    let data = await mongo.gesShow(id);
+    ctx.body = data ? { data } : error;
   },
 
-  forAccount: (ctx, id) => {
-    ctx.body = { data: id };
+  forAccount: async (ctx, id) => {
+    ctx.body = data ? { data } : error;
   },
 };
 
-const tcxs= {
-  all: ctx => {
-    ctx.body = { data: "all" };
+const tcxs = {
+  all: async ctx => {
+    let data = await mongo.tcxsAll();
+    ctx.body = data ? { data } : error;
   },
 
-  show: (ctx, id) => {
-    ctx.body = { data: id };
+  show: async (ctx, id) => {
+    let data = await mongo.tcxsShow(id);
+    ctx.body = data ? { data } : error;
   },
 
-  forAccount: (ctx, id) => {
-    ctx.body = { data: id };
+  forGe: async (ctx, id) => {
+    let data = await mongo.tcxsForGe(id);
+    ctx.body = data ? { data } : error;
   },
 };
 
 const accounts = {
-  all: ctx => {
+  all: async ctx => {
     ctx.body = { data: "account all" };
   },
 
-  show: (ctx, id) => {
-    ctx.body = { data: id };
+  show: async (ctx, id) => {
+    ctx.body = { data: "show account:" + id };
   }
 };
 
@@ -107,7 +138,7 @@ app.use(route.get("/api/v1/nodes/:id", nodes.show));
 // ges
 app.use(route.get("/api/v1/ges", ges.all));
 app.use(route.get("/api/v1/ges/:id", ges.show));
-app.use(route.get("/api/v1/ges/:id/tcxs", tcxs.forAccount));
+app.use(route.get("/api/v1/ges/:id/tcxs", tcxs.forGe));
 
 // tcx
 app.use(route.get("/api/v1/tcxs", tcxs.all));
