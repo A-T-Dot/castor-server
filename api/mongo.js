@@ -118,10 +118,18 @@ mongo.gesForAccount = async function(accountId) {
   if (!conn) {
     await mongo.connect();
   }
-  // let result = await db
-  //   .collection("ges")
-  //   .find({ owner: accountId }, { projection: { _id: 0 } })
-  //   .toArray();
+  let result = await db
+    .collection("ges")
+    .find(
+      {
+        $or: [
+          { [`members.${accountId}.invested`]: { $gt: 0 } },
+          { [`members.${accountId}.staked`]: { $gt: 0 } }
+        ]
+      },
+      { projection: { _id: 0 } }
+    )
+    .toArray();
   // TODO: ge for account
 
   return result;
