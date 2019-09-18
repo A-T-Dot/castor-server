@@ -1,0 +1,16 @@
+{
+  "name": "castor-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "git@github.com:A-T-Dot/castor-server.git",
+  "author": "Anakorn Kyavatanakij <anakornk@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@polkadot/api": "^0.92.1",
+    "dotenv": "^8.1.0",
+    "koa": "^2.8.1",
+    "koa-route": "^3.2.0",
+    "koa-websocket": "^6.0.0",
+    "mongodb": "^3.3.2"
+  }
+}
