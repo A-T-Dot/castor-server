@@ -10,9 +10,9 @@ yarn install
 ## Run
 ```
 1. Start MongoDB
-1. Run Castor Event Listener
-2. Run substrate castor
-3. yarn start (default port: 7000)
+2. Run Castor Event Listener
+3. Run substrate castor
+4. yarn start (default port: 7000)
 ```
 
 ### Rest API
