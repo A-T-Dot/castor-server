@@ -25,14 +25,20 @@ yarn install
 /api/v1/ges
 /api/v1/ges/:id
 /api/v1/ges/:id/tcxs
+/api/v1/ges/:id/tasks
 
 # tcx
 /api/v1/tcxs
 /api/v1/tcxs/:id
+/api/v1/tcxs/:id/tasks
 
 # account
 /api/v1/accounts
 /api/v1/accounts/:id
 /api/v1/accounts/:id/nodes
 /api/v1/accounts/:id/ges
+/api/v1/accounts/:id/tasks
+
+# node explorer
+/api/v1/explorer/:id
 ```
