@@ -111,7 +111,7 @@ mongo.gesShow = async function(geId) {
     ])
     .toArray();
 
-  return result;
+  return result[0];
 };
 
 mongo.gesForAccount = async function(accountId) {
