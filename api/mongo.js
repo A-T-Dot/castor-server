@@ -224,7 +224,7 @@ mongo.tasksForAccount = async function(accountId) {
   let result = await db
     .collection("proposals")
     .find({ tcxId: { $in: tcxIds } })
-    .sort({ _id: -1 })
+    .sort({ updatedAt: -1 })
     .toArray();
 
   return result;
@@ -236,7 +236,7 @@ mongo.tasksForGe = async function(geId) {
   let result = await db
     .collection("proposals")
     .find({ tcxId: { $in: tcxIds } })
-    .sort({ _id: -1 })
+    .sort({ updatedAt: -1 })
     .toArray();
 
   return result;
@@ -246,7 +246,7 @@ mongo.tasksForTcx = async function(tcxId) {
   let result = await db
     .collection("proposals")
     .find({ tcxId: tcxId }, { projection: { _id: 0 } })
-    .sort( { _id: -1 })
+    .sort( { updatedAt: -1 })
     .toArray();
   return result
 };
