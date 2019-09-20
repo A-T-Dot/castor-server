@@ -200,11 +200,18 @@ mongo.accountsAll = async function() {
   return null;
 };
 
-mongo.accountsShow = async function(tcxId) {
-  return null;
+mongo.accountsShow = async function(accountId) {
+  if (!conn) {
+    await mongo.connect();
+  }
+  let result = await db
+    .collection("accounts")
+    .findOne({ accountId: accountId });
+      
+  return result;
 };
 
-mongo.explorerShower = async function(nodeId, limit) {
+mongo.explorerShows = async function(nodeId, limit) {
   if (!conn) {
     await mongo.connect();
   }
@@ -216,11 +223,9 @@ mongo.tasksForAccount = async function(accountId) {
   let ges = await mongo.gesForAccount(accountId); 
   let tcxIds = [];
   ges.forEach((ge) => {
-    console.log(ge);
     tcxIds.push(...ge.tcxIds)
   })
 
-  console.log(tcxIds);
   let result = await db
     .collection("proposals")
     .find({ tcxId: { $in: tcxIds } })

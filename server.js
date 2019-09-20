@@ -128,7 +128,8 @@ const accounts = {
   },
 
   show: async (ctx, id) => {
-    ctx.body = { data: "show account:" + id };
+    let data = await mongo.accountsShow(id);
+    ctx.body = data ? { data } : error;
   }
 };
 
